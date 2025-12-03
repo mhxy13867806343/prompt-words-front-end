@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # 开发环境前端（使用 Vite 开发服务器）
+  frontend-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: prompt-manager-frontend-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8080
+    networks:
+      - app-network
+    command: pnpm dev --host
+
+  # 数据库（开发环境）
+  db:
+    image: postgres:15-alpine
+    container_name: prompt-manager-db-dev
+    environment:
+      - POSTGRES_DB=prompt_manager_dev
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=dev_password
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+  # Redis（开发环境）
+  redis:
+    image: redis:7-alpine
+    container_name: prompt-manager-redis-dev
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+volumes:
+  postgres-dev-data:
+
+networks:
+  app-network:
+    driver: bridge

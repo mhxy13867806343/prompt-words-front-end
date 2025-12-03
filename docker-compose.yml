@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # 前端服务
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: prompt-manager-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # 后端服务（示例配置，需要根据实际后端调整）
+  backend:
+    # 使用你的后端镜像
+    image: your-backend-image:latest
+    # 或者从本地构建
+    # build:
+    #   context: ../backend
+    #   dockerfile: Dockerfile
+    container_name: prompt-manager-backend
+    ports:
+      - "8080:8080"
+    environment:
+      # 数据库配置
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=prompt_manager
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=your_password
+      # Redis 配置
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      # JWT 配置
+      - JWT_SECRET=your_jwt_secret_key_change_this
+      - JWT_EXPIRE=30d
+      # 邮件配置
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USER=your_email@gmail.com
+      - SMTP_PASSWORD=your_email_password
+      - SMTP_FROM=your_email@gmail.com
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # PostgreSQL 数据库
+  db:
+    image: postgres:15-alpine
+    container_name: prompt-manager-db
+    environment:
+      - POSTGRES_DB=prompt_manager
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=your_password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      # 如果有初始化脚本
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: prompt-manager-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# 数据卷
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+
+# 网络
+networks:
+  app-network:
+    driver: bridge
