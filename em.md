@@ -3,6 +3,7 @@
 Minimal multi-language note for the repository.
 
 - Repository: `https://github.com/mhxy13867806343/prompt-words-front-end.git`
+- Backend: `https://github.com/mhxy13867806343/prompt-words-back-end`
 - Main docs: see `README.md`
 
 Quick commands:
@@ -12,4 +13,3 @@ pnpm install
 pnpm dev
 pnpm build
 ```
-

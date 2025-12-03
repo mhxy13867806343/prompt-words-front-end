@@ -6,6 +6,11 @@
 
 `https://github.com/mhxy13867806343/prompt-words-front-end.git`
 
+## 相关仓库
+
+- 前端：`https://github.com/mhxy13867806343/prompt-words-front-end`
+- 后端：`https://github.com/mhxy13867806343/prompt-words-back-end`
+
 ## 多语言
 
 - [中文](.md)
