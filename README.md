@@ -6,6 +6,12 @@
 
 `https://github.com/mhxy13867806343/prompt-words-front-end.git`
 
+## 多语言
+
+- [中文](.md)
+- [English](em.md)
+- [日本語](日本.md)
+
 ## 功能特性
 
 ### 用户认证
